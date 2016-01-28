@@ -11,10 +11,19 @@ public class CubeColor : MonoBehaviour
     */
     public int selectedcube = -1;
     private int dayoftheweek;
-
+	private int maxCubes = 0;
+	private List<GameObject> cubes;
     // Use this for initialization
     private void Start() {
-
+		cubes = new List<GameObject>();
+		foreach (var gameObj in FindObjectsOfType(typeof(GameObject)) as GameObject[])
+		{
+			if(gameObj.name.Contains ("Cube"))
+			{
+				cubes.Add(gameObj);
+				maxCubes++;
+			}
+		}
     }
 
     // Update is called once per frame
@@ -22,26 +31,51 @@ public class CubeColor : MonoBehaviour
     {
         ColorData cols = new ColorData();
 
-        for (int i = 0; i < 5; i++) {
-            GameObject o = GameObject.Find("Cube" + i);
-            o.GetComponent<Renderer>().material.color = cols.GetAColorToUse(i);
-        }
+        for (int i = 0; i < maxCubes; i++) {
+			if(GameObject.Find("Cube" + i))
+			{
+				GameObject o = GameObject.Find("Cube" + i);
+				o.GetComponent<Renderer>().material.color = cols.GetAColorToUse(i);
+			}
+		}
 
         if (Input.GetButtonDown("Jump"))
             set_scale_of_cubes();
+
     }
 
     private void set_scale_of_cubes()
     {
         GameObject o;
-        if (selectedcube > -1)
+		print (selectedcube);
+		print (maxCubes);
+		if (selectedcube > -1)
+		{
+			o = cubes[selectedcube];
+			o.transform.localScale = new Vector3(1, 1, 1);
+		}
+		if (selectedcube >= maxCubes - 1) {
+			selectedcube = 0;
+		} else {
+			selectedcube++;
+		}
+		o = cubes[selectedcube];
+		o.transform.localScale = new Vector3(1, 2, 1);
+		
+		/*
+		if (selectedcube > -1)
         {
             o = GameObject.Find("Cube" + selectedcube);
             o.transform.localScale = new Vector3(1, 1, 1);
         }
-        selectedcube++;
-        o = GameObject.Find("Cube" + selectedcube);
+		if (selectedcube >= maxCubes) {
+			selectedcube = 0;
+		} else {
+			selectedcube++;
+		}
+		o = GameObject.Find("Cube" + selectedcube);
         o.transform.localScale = new Vector3(1, 2, 1);
+      	*/
     }
 
     public float yOfCube(int cubeNumber)
